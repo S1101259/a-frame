@@ -8,26 +8,47 @@ window.onload = function (ev) {
     var cuttingboard = document.getElementById('cuttingboard');
     var dartBoard = document.getElementById('DartBoard');
 
-    carrot.addEventListener('click', function () {
-        var animation = document.getElementById('pick_up_carrot');
+    carrot.addEventListener('click', function (e) {
+        if(cuttingboard !== carrot.parentNode) {
+            var animation_pick_carrot = document.getElementById('pick_up_carrot');
+            var animation_pick_carrot2 = document.getElementById('pick_up_carrot2');
 
-        carrot.setAttribute('position', '0.147, -0.153, -0.6');
-        carrot.setAttribute('scale', '0.05 0.05 0.05');
-        carrot.setAttribute('rotation', '20 0 30');
-        carrot.classList.remove('clickable');
-        cuttingboard.classList.add("clickable");
-        camera.appendChild(carrot);
+            animation_pick_carrot.addEventListener('animationend', function () {
+                animation_pick_carrot2.addEventListener('animationend', function () {
+                    carrot.setAttribute('position', '0.147, -0.153, -0.6');
+                    carrot.setAttribute('scale', '0.05 0.05 0.05');
+                    carrot.setAttribute('rotation', '20 0 30');
+                    cuttingboard.classList.add("clickable");
+                    camera.appendChild(carrot);
+                });
+                animation_pick_carrot2.start()
+            });
+
+            carrot.classList.remove('clickable');
+            carrot.classList.add('not-clickable');
+            animation_pick_carrot.start();
+        }
     });
 
     cuttingboard.addEventListener('click', function () {
         if (carrot.parentNode === camera){
-            document.getElementById('put_down').components.sound.playSound();
+            var put_down_carrot = document.getElementById('put_down_carrot');
+
+
+            cuttingboard.classList.remove('clickable');
             cuttingboard.appendChild(carrot);
             carrot.setAttribute('scale', '5 0.1 0.1');
+            carrot.setAttribute('position', '0 40 0');
             carrot.setAttribute('rotation' , '0 -90 90');
-            carrot.setAttribute('position', '0 3.20 0');
-            cuttingboard.classList.remove('clickable');
-            knife.classList.add('clickable');
+
+                put_down_carrot.addEventListener('animationend', function () {
+                    document.getElementById('put_down').components.sound.playSound();
+                    knife.classList.add('clickable');
+                });
+
+            setTimeout(function () {
+                put_down_carrot.start();
+            }, 10);
         }
 
         if (knife.parentNode === camera){
@@ -35,6 +56,7 @@ window.onload = function (ev) {
             knife.setAttribute('position', '0.25 3.4 4.2');
             knife.setAttribute('rotation', '-60  -90 0');
             knife.classList.remove('clickable');
+            cuttingboard.classList.remove('clickable');
 
             scene.appendChild(knife);
 
@@ -70,12 +92,23 @@ window.onload = function (ev) {
 
 
     knife.addEventListener('click', function () {
-        document.getElementById("pick_up").components.sound.playSound();
-        camera.appendChild(knife);
-        knife.setAttribute('position', '0.147, -0.153, -0.6');
-        knife.setAttribute('scale', '0.05 0.05 0.05');
-        knife.setAttribute('rotation', '-30 5 0');
-        cuttingboard.classList.add("clickable");
+        var animation_pick_knife = document.getElementById('pick_up_knife');
+        var animation_pick_knife2 = document.getElementById('pick_up_knife2');
+
+        animation_pick_knife.addEventListener('animationend', function () {
+            animation_pick_knife2.addEventListener('animationend', function () {
+                document.getElementById("pick_up").components.sound.playSound();
+                camera.appendChild(knife);
+                knife.setAttribute('position', '0.147, -0.153, -0.6');
+                knife.setAttribute('scale', '0.05 0.05 0.05');
+                knife.setAttribute('rotation', '-30 5 0');
+                cuttingboard.classList.add("clickable");
+            });
+
+            animation_pick_knife2.start()
+        });
+
+        animation_pick_knife.start()
         // dartBoard.classList.add("clickable");
         // console.log('hallo')
     });
